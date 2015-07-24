@@ -550,7 +550,10 @@ void processRx(void)
 
     if (throttleStatus == THROTTLE_LOW) {
         pidResetErrorAngle();
-        pidResetErrorGyro();
+    }
+
+    if(FLIGHT_MODE(PASSTHRU_MODE)){
+    	pidResetErrorGyro();
     }
 
     // When armed and motors aren't spinning, do beeps and then disarm
