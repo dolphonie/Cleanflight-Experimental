@@ -276,7 +276,7 @@ void annexCode(void)
             ENABLE_ARMING_FLAG(OK_TO_ARM);
         }
 
-        if (!STATE(SMALL_ANGLE)) {
+        if (!STATE(SMALL_ANGLE) && !FLIGHT_MODE(MIXER_AIRPLANE)) {
             DISABLE_ARMING_FLAG(OK_TO_ARM);
         }
 
