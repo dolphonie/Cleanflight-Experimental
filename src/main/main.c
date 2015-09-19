@@ -89,6 +89,7 @@
 
 #include "build_config.h"
 #include "debug.h"
+#include "debug_print.h"
 
 extern uint32_t previousTime;
 extern uint8_t motorControlEnable;
@@ -511,6 +512,8 @@ void processLoopback(void) {
 
 int main(void) {
     init();
+
+    dbprintf("Initialization complete\n");
 
     while (1) {
         loop();

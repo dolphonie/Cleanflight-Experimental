@@ -21,3 +21,5 @@
 #define SPEKTRUM_SAT_BIND_MAX 10
 
 uint8_t spektrumFrameStatus(void);
+
+extern void writeSpektrumDebugPort(uint8_t c);

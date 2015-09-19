@@ -79,6 +79,8 @@
 #include "config/config_profile.h"
 #include "config/config_master.h"
 
+#include "debug_print.h"
+
 // June 2013     V2.2-dev
 
 enum {
@@ -89,6 +91,9 @@ enum {
 
 /* for VBAT monitoring frequency */
 #define VBATFREQ 6        // to read battery voltage - nth number of loop iterations
+
+
+uint32_t iters = 0;
 
 uint32_t currentTime = 0;
 uint32_t previousTime = 0;
@@ -273,27 +278,34 @@ void annexCode(void)
         LED0_ON;
     } else {
         if (IS_RC_MODE_ACTIVE(BOXARM) == 0) {
+        	dbprintf("a");
             ENABLE_ARMING_FLAG(OK_TO_ARM);
         }
 
-        if (!STATE(SMALL_ANGLE) && !FLIGHT_MODE(MIXER_AIRPLANE)) {
+        if (!STATE(SMALL_ANGLE) && masterConfig.mixerMode!=MIXER_AIRPLANE) {
+        	dbprintf("b");
             DISABLE_ARMING_FLAG(OK_TO_ARM);
         }
 
         if (IS_RC_MODE_ACTIVE(BOXAUTOTUNE)) {
+        	dbprintf("c");
             DISABLE_ARMING_FLAG(OK_TO_ARM);
         }
 
         if (isCalibrating()) {
+        	dbprintf("d");
             warningLedFlash();
             DISABLE_ARMING_FLAG(OK_TO_ARM);
         } else {
             if (ARMING_FLAG(OK_TO_ARM)) {
+            	dbprintf("e");
                 warningLedDisable();
             } else {
+            	dbprintf("f");
                 warningLedFlash();
             }
         }
+        dbprintf("\n");
 
         warningLedUpdate();
     }
@@ -687,7 +699,7 @@ void processRx(void)
 
 void loop(void)
 {
-    static uint32_t loopTime;
+	static uint32_t loopTime;
 #if defined(BARO) || defined(SONAR)
     static bool haveProcessedAnnexCodeOnce = false;
 #endif
@@ -732,6 +744,8 @@ void loop(void)
     currentTime = micros();
     if (masterConfig.looptime == 0 || (int32_t)(currentTime - loopTime) >= 0) {
         loopTime = currentTime + masterConfig.looptime;
+
+        dbprintf("Iter %d: ", iters++);
 
         imuUpdate(&currentProfile->accelerometerTrims);
 

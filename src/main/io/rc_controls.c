@@ -55,6 +55,7 @@
 
 #include "mw.h"
 
+#include "debug_print.h"
 
 static escAndServoConfig_t *escAndServoConfig;
 static pidProfile_t *pidProfile;
@@ -112,11 +113,12 @@ void processRcStickPositions(rxConfig_t *rxConfig, throttleStatus_e throttleStat
     } else
         rcDelayCommand = 0;
     rcSticks = stTmp;
-
+    dbprintf("A%d",rcDelayCommand);
     // perform actions
     if (!isUsingSticksToArm) {
 
         if (IS_RC_MODE_ACTIVE(BOXARM)) {
+        	dbprintf("g");
             // Arming via ARM BOX
             if (throttleStatus == THROTTLE_LOW) {
                 if (ARMING_FLAG(OK_TO_ARM)) {
@@ -135,12 +137,13 @@ void processRcStickPositions(rxConfig_t *rxConfig, throttleStatus_e throttleStat
             }
         }
     }
-
+    dbprintf("m");
     if (rcDelayCommand != 20) {
         return;
     }
-
+    dbprintf("n");
     if (isUsingSticksToArm) {
+    	dbprintf("h");
         // Disarm on throttle down + yaw
         if (rcSticks == THR_LO + YAW_LO + PIT_CE + ROL_CE) {
             if (ARMING_FLAG(ARMED))
@@ -165,7 +168,7 @@ void processRcStickPositions(rxConfig_t *rxConfig, throttleStatus_e throttleStat
         // actions during armed
         return;
     }
-
+    dbprintf("i"	);
     // actions during not armed
     i = 0;
 
@@ -213,13 +216,14 @@ void processRcStickPositions(rxConfig_t *rxConfig, throttleStatus_e throttleStat
     }
 
     if (isUsingSticksToArm) {
-
+    	dbprintf("j");
         if (rcSticks == THR_LO + YAW_HI + PIT_CE + ROL_CE) {
+        	dbprintf("k");
             // Arm via YAW
             mwArm();
             return;
         }
-
+        if (retarded_arm) dbprintf("l");
         if (retarded_arm && (rcSticks == THR_LO + YAW_CE + PIT_CE + ROL_HI)) {
             // Arm via ROLL
             mwArm();

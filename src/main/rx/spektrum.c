@@ -33,7 +33,11 @@
 #include "config/config.h"
 
 #include "rx/rx.h"
+
+#include "debug_print.h"
+
 #include "rx/spektrum.h"
+
 
 // driver for spektrum satellite receiver / sbus
 
@@ -49,6 +53,12 @@ static uint8_t spek_chan_shift;
 static uint8_t spek_chan_mask;
 static bool rcFrameComplete = false;
 static bool spekHiRes = false;
+
+serialPort_t* spektrumPort = 0;
+
+void writeSpektrumDebugPort(uint8_t c) {
+	serialWrite(spektrumPort, c);
+}
 
 static volatile uint8_t spekFrame[SPEK_FRAME_SIZE];
 
@@ -86,7 +96,9 @@ bool spektrumInit(rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig, rcRe
         return false;
     }
 
-    serialPort_t *spektrumPort = openSerialPort(portConfig->identifier, FUNCTION_RX_SERIAL, spektrumDataReceive, SPEKTRUM_BAUDRATE, MODE_RX, SERIAL_NOT_INVERTED);
+    serialPort_t* spektrumPort = openSerialPort(portConfig->identifier, FUNCTION_RX_SERIAL, spektrumDataReceive, SPEKTRUM_BAUDRATE, MODE_RXTX, SERIAL_NOT_INVERTED);
+
+    dbSetSerialPort(spektrumPort);
 
     return spektrumPort != NULL;
 }
