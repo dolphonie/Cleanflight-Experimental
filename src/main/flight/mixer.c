@@ -565,10 +565,10 @@ static void crazyMixer(void) {
 		yaw = axisPID[YAW];
 	}
 
-	servo[3] = (-pitch + roll) / 2;       			 // Left Aileron
-	servo[4] = (pitch + roll) / 2;			         // Right Aileron
-	servo[5] = (-yaw + roll) / 2;                     // Top Rudder
-	servo[6] = (yaw + roll) / 2;                    // Bottom Rudder
+	servo[3] = (-pitch - roll) / 2;       			 // Left Aileron
+	servo[4] = (pitch - roll) / 2;			         // Right Aileron
+	servo[5] = (yaw - roll) / 2;                     // Top Rudder
+	servo[6] = (-yaw - roll) / 2;                    // Bottom Rudder
 
 	for (i = 3; i < 7; i++) {
 		servo[i] = ((int32_t) servoConf[i].rate * servo[i]) / 100L; // servo rates
